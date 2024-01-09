@@ -64,14 +64,14 @@ class ConvNeXt(nn.Module):
         head_init_scale (float): Init scaling value for classifier weights and biases. Default: 1.
     """
     def __init__(self, in_chans=3, num_classes=1000, 
-                 depths=[3, 3, 9, 3], dims=[96, 192, 384, 768], drop_path_rate=0., 
+                 depths=[3, 4, 6, 3], dims=[96, 192, 384, 768], drop_path_rate=0., 
                  layer_scale_init_value=1e-6, head_init_scale=1.,
                  ):
         super().__init__()
 
         self.downsample_layers = nn.ModuleList() # stem and 3 intermediate downsampling conv layers
         stem = nn.Sequential(
-            nn.Conv2d(in_chans, dims[0], kernel_size=4, stride=4),
+            nn.Conv2d(in_chans, dims[0], kernel_size=7, stride=2),
             LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
         )
         self.downsample_layers.append(stem)
@@ -157,7 +157,7 @@ model_urls = {
 
 @register_model
 def convnext_tiny(pretrained=False,in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 9, 3], dims=[96, 192, 384, 768], **kwargs)
+    model = ConvNeXt(depths=[3, 4, 6, 3], dims=[96, 192, 384, 768], **kwargs)
     if pretrained:
         url = model_urls['convnext_tiny_22k'] if in_22k else model_urls['convnext_tiny_1k']
         checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu", check_hash=True)
@@ -166,7 +166,7 @@ def convnext_tiny(pretrained=False,in_22k=False, **kwargs):
 
 @register_model
 def convnext_small(pretrained=False,in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[96, 192, 384, 768], **kwargs)
+    model = ConvNeXt(depths=[3, 4, 6, 3], dims=[96, 192, 384, 768], **kwargs)
     if pretrained:
         url = model_urls['convnext_small_22k'] if in_22k else model_urls['convnext_small_1k']
         checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
@@ -175,7 +175,7 @@ def convnext_small(pretrained=False,in_22k=False, **kwargs):
 
 @register_model
 def convnext_base(pretrained=False, in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[128, 256, 512, 1024], **kwargs)
+    model = ConvNeXt(depths=[3, 4, 6, 3], dims=[128, 256, 512, 1024], **kwargs)
     if pretrained:
         url = model_urls['convnext_base_22k'] if in_22k else model_urls['convnext_base_1k']
         checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
@@ -184,7 +184,7 @@ def convnext_base(pretrained=False, in_22k=False, **kwargs):
 
 @register_model
 def convnext_large(pretrained=False, in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[192, 384, 768, 1536], **kwargs)
+    model = ConvNeXt(depths=[3, 4, 6, 3], dims=[192, 384, 768, 1536], **kwargs)
     if pretrained:
         url = model_urls['convnext_large_22k'] if in_22k else model_urls['convnext_large_1k']
         checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")
@@ -193,7 +193,7 @@ def convnext_large(pretrained=False, in_22k=False, **kwargs):
 
 @register_model
 def convnext_xlarge(pretrained=False, in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[256, 512, 1024, 2048], **kwargs)
+    model = ConvNeXt(depths=[3, 4, 6, 3], dims=[256, 512, 1024, 2048], **kwargs)
     if pretrained:
         assert in_22k, "only ImageNet-22K pre-trained ConvNeXt-XL is available; please set in_22k=True"
         url = model_urls['convnext_xlarge_22k']
